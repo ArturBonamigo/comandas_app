@@ -1,14 +1,18 @@
 import {
     Table, TableBody, TableCell, TableContainer, TableHead,
-    TableRow, Paper, Button, Card, CardContent, Typography, Box, Divider
+    TableRow, Paper, Button, Card, CardContent, Typography, Box, Divider, Chip
 } from '@mui/material';
 import { FiberNew } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from "../components/common/PageLayout";
 import ActionButtons from "../components/common/ActionButtons";
+import { getGrupoInfo } from '../constants/userGroups';
+import { useMasks } from '../hooks/useMasks';
 
 function FuncionarioList() {
     const navigate = useNavigate();
+
+    const { applyCpfMask, applyPhoneMask } = useMasks();
 
     const funcionarios = [
         { id: 1, nome: 'Artur Bonamigo', matricula: '123456789', cpf: '11111111111', telefone: '49984211154', grupo: 1 },
@@ -29,9 +33,17 @@ function FuncionarioList() {
         </Button>
     );
 
-    const handleView = (funcionario) => console.log("Visualizar funcionário:", funcionario);
-    const handleEdit = (funcionario) => navigate(`/funcionario/${funcionario.id}`);
-    const handleDelete = (funcionario) => console.log("Excluir funcionário:", funcionario);
+    const handleView = (funcionario) => {
+        console.log("Visualizar funcionário:", funcionario);
+    };
+
+    const handleEdit = (funcionario) => {
+        navigate(`/funcionario/${funcionario.id}`);
+    };
+
+    const handleDelete = (funcionario) => {
+        console.log("Excluir funcionário:", funcionario);
+    };
 
     const columns = [
         { field: 'id', headerName: 'ID' },
@@ -43,57 +55,99 @@ function FuncionarioList() {
         { field: 'actions', headerName: 'Ações' }
     ];
 
-    const renderDesktopRow = (funcionario) => (
-        <TableRow key={funcionario.id} hover>
-            <TableCell>{funcionario.id}</TableCell>
-            <TableCell sx={{ fontWeight: 500 }}>{funcionario.nome}</TableCell>
-            <TableCell>{funcionario.matricula}</TableCell>
-            <TableCell>{funcionario.cpf}</TableCell>
-            <TableCell>{funcionario.telefone}</TableCell>
-            <TableCell>{funcionario.grupo}</TableCell>
-            <TableCell>
-                <ActionButtons
-                    item={funcionario}
-                    onView={handleView}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
-            </TableCell>
-        </TableRow>
-    );
+    const renderDesktopRow = (funcionario) => {
+        const grupoInfo = getGrupoInfo(funcionario.grupo);
 
-    const renderMobileCard = (funcionario) => (
-        <Card key={funcionario.id} sx={{ mb: 2, elevation: 2 }}>
-            <CardContent sx={{ p: 2 }}>
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 600 }}>
-                        {funcionario.nome}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        ID: {funcionario.id}
-                    </Typography>
-                </Box>
+        return (
+            <TableRow key={funcionario.id} hover>
+                <TableCell>{funcionario.id}</TableCell>
 
-                <Divider sx={{ mb: 2 }} />
+                <TableCell sx={{ fontWeight: 500 }}>
+                    {funcionario.nome}
+                </TableCell>
 
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2"><strong>Matrícula:</strong> {funcionario.matricula}</Typography>
-                    <Typography variant="body2"><strong>CPF:</strong> {funcionario.cpf}</Typography>
-                    <Typography variant="body2"><strong>Telefone:</strong> {funcionario.telefone}</Typography>
-                    <Typography variant="body2"><strong>Grupo:</strong> {funcionario.grupo}</Typography>
-                </Box>
+                <TableCell>{funcionario.matricula}</TableCell>
 
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <TableCell>
+                    {applyCpfMask(funcionario.cpf)}
+                </TableCell>
+
+                <TableCell>
+                    {applyPhoneMask(funcionario.telefone)}
+                </TableCell>
+
+                <TableCell>
+                    <Chip
+                        label={grupoInfo.label}
+                        color={grupoInfo.color}
+                        size="small"
+                    />
+                </TableCell>
+
+                <TableCell>
                     <ActionButtons
                         item={funcionario}
                         onView={handleView}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
                     />
-                </Box>
-            </CardContent>
-        </Card>
-    );
+                </TableCell>
+            </TableRow>
+        );
+    };
+
+    const renderMobileCard = (funcionario) => {
+        const grupoInfo = getGrupoInfo(funcionario.grupo);
+
+        return (
+            <Card key={funcionario.id} sx={{ mb: 2, elevation: 2 }}>
+                <CardContent sx={{ p: 2 }}>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                            {funcionario.nome}
+                        </Typography>
+
+                        <Typography variant="body2" color="text.secondary">
+                            ID: {funcionario.id}
+                        </Typography>
+                    </Box>
+
+                    <Divider sx={{ mb: 2 }} />
+
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="body2">
+                            <strong>Matrícula:</strong> {funcionario.matricula}
+                        </Typography>
+
+                        <Typography variant="body2">
+                            <strong>CPF:</strong> {applyCpfMask(funcionario.cpf)}
+                        </Typography>
+
+                        <Typography variant="body2">
+                            <strong>Telefone:</strong> {applyPhoneMask(funcionario.telefone)}
+                        </Typography>
+
+                        <Box sx={{ mt: 1 }}>
+                            <Chip
+                                label={grupoInfo.label}
+                                color={grupoInfo.color}
+                                size="small"
+                            />
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <ActionButtons
+                            item={funcionario}
+                            onView={handleView}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
+                    </Box>
+                </CardContent>
+            </Card>
+        );
+    };
 
     return (
         <PageLayout title="Funcionários" actions={actions}>
