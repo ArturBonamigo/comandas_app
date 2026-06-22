@@ -3,6 +3,7 @@ import { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import RestrictedRoute from "./RestrictedRoute";
+
 // Lazy Loading para otimização (code-splitting)
 // Os componentes das páginas são carregados de forma assíncrona usando React.lazy.
 // Suspense + lazy() dividem o código em chunks separados, melhorando o desempenho.
@@ -16,6 +17,10 @@ const ProdutoListPublic = lazy(() => import("../pages/ProdutoListPublic"));
 const ProdutoForm = lazy(() => import("../pages/ProdutoForm"));
 const LoginForm = lazy(() => import("../components/forms/LoginForm"));
 const NotFound = lazy(() => import("../pages/NotFound"));
+const ComandaList = lazy(() => import("../pages/ComandaList"));
+const ComandaForm = lazy(() => import("../pages/ComandaForm"));
+const ComandaConsumoForm = lazy(() => import("../pages/ComandaConsumoForm"));
+
 // Loader para o Suspense - melhora a experiência do usuário em aplicações maiores.
 // Sempre que uma rota for acessada, o Suspense exibirá o fallback (Carregando...) até que o componente da rota seja carregado.
 const Loading = () => <div>Carregando...</div>;
@@ -41,6 +46,10 @@ const AppRoutes = () => {
                 <Route path="/funcionario" element={<PrivateRoute><FuncionarioForm /></PrivateRoute>} />
                 <Route path="/clientes" element={<PrivateRoute><ClienteList /></PrivateRoute>} />
                 <Route path="/cliente" element={<PrivateRoute><ClienteForm /></PrivateRoute>} />
+                <Route path="/comandas" element={<PrivateRoute><ComandaList /></PrivateRoute>} />
+                <Route path="/comanda" element={<PrivateRoute><ComandaForm /></PrivateRoute>} />
+                <Route path="/comanda/:opr/:id" element={<PrivateRoute><ComandaForm /></PrivateRoute>} />
+                <Route path="/comanda/consumo/:id" element={<PrivateRoute><ComandaConsumoForm /></PrivateRoute>} />
                 {/* Rota para editar ou visualizar com opr {view ou edit} e id dinâmico */}
                 <Route path="/produto/:opr/:id" element={<PrivateRoute><ProdutoForm /></PrivateRoute>} />
                 {/* Rota para páginas não encontradas */}

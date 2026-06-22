@@ -1,13 +1,35 @@
 import { Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
+
 const SnackbarGlobal = () => {
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'error' });
     const [dialog, setDialog] = useState({ open: false, title: '', message: '', onConfirm: null });
+    const formatMessage = (message) => {
+        if (typeof message === 'string') return message;
+
+        if (Array.isArray(message)) {
+            return message.map((item) => item.msg || JSON.stringify(item)).join(', ');
+        }
+
+        if (message && typeof message === 'object') {
+            if (Array.isArray(message.detail)) {
+                return message.detail.map((item) => item.msg || JSON.stringify(item)).join(', ');
+            }
+
+            if (typeof message.detail === 'string') {
+                return message.detail;
+            }
+
+            return JSON.stringify(message);
+        }
+
+        return 'Erro inesperado.';
+    };
     useEffect(() => {
         // Listener para eventos de notificação
         const handleShowSnackbar = (event) => {
             const { message, severity } = event.detail;
-            setSnackbar({ open: true, message, severity });
+            setSnackbar({ open: true, message: formatMessage(message), severity });
         };
         // Listener para eventos de confirmação
         const handleShowConfirm = (event) => {
