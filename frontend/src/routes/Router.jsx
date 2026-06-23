@@ -20,6 +20,7 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const ComandaList = lazy(() => import("../pages/ComandaList"));
 const ComandaForm = lazy(() => import("../pages/ComandaForm"));
 const ComandaConsumoForm = lazy(() => import("../pages/ComandaConsumoForm"));
+const Caixa = lazy(() => import("../pages/Caixa"));
 
 // Loader para o Suspense - melhora a experiência do usuário em aplicações maiores.
 // Sempre que uma rota for acessada, o Suspense exibirá o fallback (Carregando...) até que o componente da rota seja carregado.
@@ -44,12 +45,15 @@ const AppRoutes = () => {
                 <Route path="/produto" element={<PrivateRoute><ProdutoForm /></PrivateRoute>} />
                 <Route path="/funcionarios" element={<PrivateRoute><FuncionarioList /></PrivateRoute>} />
                 <Route path="/funcionario" element={<PrivateRoute><FuncionarioForm /></PrivateRoute>} />
+                <Route path="/funcionario/:opr/:id" element={<PrivateRoute><FuncionarioForm /></PrivateRoute>} />
                 <Route path="/clientes" element={<PrivateRoute><ClienteList /></PrivateRoute>} />
                 <Route path="/cliente" element={<PrivateRoute><ClienteForm /></PrivateRoute>} />
+                <Route path="/cliente/:opr/:id" element={<PrivateRoute><ClienteForm /></PrivateRoute>} />
                 <Route path="/comandas" element={<PrivateRoute><ComandaList /></PrivateRoute>} />
                 <Route path="/comanda" element={<PrivateRoute><ComandaForm /></PrivateRoute>} />
                 <Route path="/comanda/:opr/:id" element={<PrivateRoute><ComandaForm /></PrivateRoute>} />
                 <Route path="/comanda/consumo/:id" element={<PrivateRoute><ComandaConsumoForm /></PrivateRoute>} />
+                <Route path="/caixa" element={<PrivateRoute><Caixa /></PrivateRoute>} />
                 {/* Rota para editar ou visualizar com opr {view ou edit} e id dinâmico */}
                 <Route path="/produto/:opr/:id" element={<PrivateRoute><ProdutoForm /></PrivateRoute>} />
                 {/* Rota para páginas não encontradas */}
